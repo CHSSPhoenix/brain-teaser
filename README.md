@@ -3,5 +3,6 @@
 To run the test cases:
 
 ````
-stack build --test
+stack test
+stack bench
 ````
