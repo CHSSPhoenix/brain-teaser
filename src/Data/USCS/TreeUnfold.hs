@@ -73,11 +73,21 @@ myIterateTree :: (a -> a) -> a -> Tree a
 myIterateTree f = unfoldTree (\s -> let ss = f s
                                     in Right (ss, s))
 
---myMap :: (a -> b) -> [a] -> [b]
---myMap f list = unfold ((:) . f) []
+myMap :: (a -> b) -> [a] -> [b]
+myMap f list = unfoldr (\s -> if null s
+                              then Nothing
+                              else Just (f (head s), tail s)) list
 
-{-
-Como definir la funcion Map en terminos del unfoldr
--}
+balanced :: Int -> Tree ()
+balanced = unfoldTree (\s -> if s == 1
+                             then Left ()
+                             else Right (s-1, s-1))
 
---map f list = foldr ((:) . f) [] list
+-- Generates any tree with the given number of nodes. Each leaf should have a unique label.
+sized :: Int -> Tree Int
+sized n = unfoldTree (\(s,num) -> case s of
+                                    0 -> Left num
+                                    _ -> let s' = s - 1
+                                             a = s' `div` 2
+                                             b = s' `mod` 2
+                                          in Right ((a + b, (num + s) * 2), (a,num + 1))) (n,1)
